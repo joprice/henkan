@@ -91,12 +91,24 @@ object Extractor {
     sequencer: RecordSequencer.Aux[ReprKleisli, Kleisli[F, S, Repr]],
     un: Unapply.Aux1[Functor, FH, F, F[S]]
   ): Extractor[F, S, T] = new Extractor[F, S, T] {
-
     def apply(): Kleisli[F, S, T] = {
       implicit val functor: Functor[F] = un.TC
       sequencer(mapper(fds())).map(gen.from)
     }
+  }
 
+  implicit def mkExtractor2[FH, A, F[_, _], S, T, Repr <: HList, FDs <: HList, ReprKleisli <: HList](
+    implicit
+    gen: LabelledGeneric.Aux[T, Repr],
+    fds: FieldDefs.Aux[Repr, FDs],
+    mapper: Mapper.Aux[fieldExtractorMapper.type, FDs, ReprKleisli],
+    sequencer: RecordSequencer.Aux[ReprKleisli, Kleisli[F[A, ?], S, Repr]],
+    un: Unapply.Aux2Right[Functor, FH, F, A, S]
+  ): Extractor[F[A, ?], S, T] = new Extractor[F[A, ?], S, T] {
+    def apply(): Kleisli[F[A, ?], S, T] = {
+      implicit val functor: Functor[F[A, ?]] = un.TC
+      sequencer(mapper(fds())).map(gen.from)
+    }
   }
 
   def apply[F[_], S, T](implicit ex: Extractor[F, S, T]): Extractor[F, S, T] = ex

@@ -1,5 +1,7 @@
 package henkan
 
+import cats.data.Xor
+import henkan.ExtractorSpec.Validated
 import org.specs2.mutable.Specification
 
 import cats.implicits._
@@ -45,5 +47,32 @@ class ExtractorSpec extends Specification {
 
   }
 
+  "extract Xor from hierarchical data" >> {
+
+    def safeCast[T](t: Any): Try[T] = Try(t.asInstanceOf[T])
+
+    def myFieldReader[T] = FieldReader { (m: Map[String, Any], field: String) ⇒
+      Xor.fromTry(Try(m(field)).flatMap(safeCast[T])): Validated[T]
+    }
+    implicit val fint = myFieldReader[Int]
+    implicit val fString = myFieldReader[String]
+
+    implicit val decom = Decomposer((m: Map[String, Any], field: String) ⇒
+      Xor.fromTry(Try(m(field)).flatMap(safeCast[Map[String, Any]])): Validated[Map[String, Any]])
+    val data = Map[String, Any]("foo1" → "parent", "child" → Map[String, Any]("foo" → "a", "bar" → 2))
+
+    implicitly[Extractor[Xor[Throwable, ?], Map[String, Any], MyClass]]
+    //    extract[Validated, MyParent](data) === Xor.right[Throwable, MyParent](MyParent("parent", MyClass("a", 2)))
+
+    //    val data2 = Map[String, Any]("foo1" → "parent", "child" → Map[String, Any]("foo" → "a"))
+
+    //    extract[Option, MyParent](data2) must beNone
+
+  }
+
+}
+
+object ExtractorSpec {
+  type Validated[T] = Xor[Throwable, T]
 }
 
