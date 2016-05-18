@@ -1,6 +1,6 @@
 package henkan.extractor
 
-import algebra.{Semigroup, Monoid}
+import cats.{Semigroup, Monoid}
 import alleycats.{Pure, EmptyK}
 import cats.{Functor, Unapply}
 import org.specs2.mutable.Specification

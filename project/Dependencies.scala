@@ -8,7 +8,7 @@ object Dependencies {
 
   val shapeless = Seq("com.chuusai" %% "shapeless" % "2.3.0")
 
-  val cat = Seq("org.typelevel" %% "cats" % "0.5.0")
+  val cats = Seq("org.typelevel" %% "cats" % "0.6.0")
 
   val kittens = Seq("org.typelevel" %% "kittens" % "1.0.0-M3")
 
@@ -25,7 +25,7 @@ object Dependencies {
       "bintray/non" at "http://dl.bintray.com/non/maven",
       Resolver.bintrayRepo("scalaz", "releases")
     ),
-    libraryDependencies ++= kittens,
+    libraryDependencies ++= kittens ++ cats,
 
     addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.7.1"),
     addCompilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.1.0" cross CrossVersion.full)

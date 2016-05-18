@@ -1,5 +1,7 @@
 package henkan
 
+import cats.ApplicativeError
+import cats.data.Xor
 import henkan.syntax.convert._
 import org.specs2.mutable.Specification
 import shapeless.ops.record.{RemoveAll, Keys, SelectAll}

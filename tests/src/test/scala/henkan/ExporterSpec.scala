@@ -1,6 +1,6 @@
 package henkan.exporter
 
-import algebra.Semigroup
+import cats.Semigroup
 import henkan.FieldName
 import henkan.extractor.{MyParent, MyClass}
 import org.specs2.mutable.Specification
